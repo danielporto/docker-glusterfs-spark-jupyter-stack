@@ -81,16 +81,36 @@ more info: https://sparkbyexamples.com/pyspark/pyspark-read-csv-file-into-datafr
 Go to http://spark.pluribus.vcap.me or http://localhost:8080/ on your Docker host (laptop) to see the status of the Spark master.
 
 Use Portainer to access the shell of the spark-master container.
-Go to the command line of the Spark master and start PySpark.
+Go to the command line of the Spark master/worker/jupyter and start PySpark.
 ```
   docker exec -it spark-master bash
 
   /spark/bin/pyspark --master spark://spark-master:7077
+
+Python 3.7.10 (default, Mar  2 2021, 09:06:08) 
+[GCC 8.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+22/07/25 14:12:37 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /__ / .__/\_,_/_/ /_/\_\   version 3.2.1
+      /_/
+
+Using Python version 3.7.10 (default, Mar  2 2021 09:06:08)
+Spark context Web UI available at http://3b5822d57c5b:4040
+Spark context available as 'sc' (master = spark://spark-master:7077, app id = app-20220725141239-0000).
+SparkSession available as 'spark'.
+>>> 
 ```
 
-Load breweries.csv from HDFS.
+Load breweries.csv from DFS.
 ```
-  brewfile = spark.read.csv("hdfs://namenode:9000/data/openbeer/breweries/breweries.csv")
+  brewfile = spark.read.csv("/gfs/data/breweries.csv")
   
   brewfile.show()
 +----+--------------------+-------------+-----+---+
