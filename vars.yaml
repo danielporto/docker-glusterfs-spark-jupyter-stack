@@ -1,0 +1,9 @@
+---
+# ==========================================================================================
+# System default
+# ==========================================================================================
+default_user: "dporto"
+default_home_dir: "/home/{{default_user}}"
+default_install_dir: "{{default_home_dir}}/kaioken"
+monitor_install_dir: "{{ default_install_dir }}/monitor"
+
