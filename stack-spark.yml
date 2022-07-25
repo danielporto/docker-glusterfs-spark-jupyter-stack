@@ -41,9 +41,6 @@ services:
 
   spark-worker:
     image: bde2020/spark-worker:3.2.1-hadoop3.2
-    build: 
-      context: ./conf
-      dockerfile: Dockerfile
     networks:
       # do not use aliases here. replication will make a mess with the server communication
       workbench:
