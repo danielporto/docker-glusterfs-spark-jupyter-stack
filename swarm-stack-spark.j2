@@ -1,18 +1,18 @@
 version: '3.8'
 networks:
-  workbench:
+  {{ swarm_internal_overlay_network }}:
     external: true
-  net_traefik:
+  {{ swarm_external_overlay_network }}:
     external: true
 
 services:
   spark-master:
     image: bde2020/spark-master:3.2.1-hadoop3.2
     networks:
-      workbench:
+      {{ swarm_internal_overlay_network }}:
         aliases:
           - spark-master
-      net_traefik:
+      {{ swarm_external_overlay_network }}:
         aliases:
           - spark-master
     # ports:
@@ -21,7 +21,7 @@ services:
     env_file:
       - ./env    
     volumes:
-      - /mnt/gfs:/gfs
+      - {{ gluster_mount_dir }}:/gfs
       - ./:/localdata
     deploy:
       replicas: 1
@@ -32,9 +32,9 @@ services:
         constraints: [node.role == manager]
       labels:
         - traefik.enable=true
-        - traefik.docker.network=net_traefik  # required when container connects to more than one network
+        - traefik.docker.network={{ swarm_external_overlay_network }}  # required when container connects to more than one network
         - traefik.http.services.to-spark.loadbalancer.server.port=8080
-        - traefik.http.routers.to-spark.rule=Host(`spark.pluribus.vcap.me`)
+        - traefik.http.routers.to-spark.rule=Host(`spark.{{ swarm_env_domain }}`)
         # - traefik.http.routers.to-spark.tls=true
         # - traefik.http.routers.to-spark.entrypoints=websecure
         - traefik.http.routers.to-spark.entrypoints=web
@@ -43,13 +43,12 @@ services:
     image: bde2020/spark-worker:3.2.1-hadoop3.2
     networks:
       # do not use aliases here. replication will make a mess with the server communication
-      workbench:
-      net_traefik:
+      {{ swarm_internal_overlay_network }}:
+      {{ swarm_external_overlay_network }}:
     # ports:
     #   - 8081:8081
     volumes:
-      - /mnt/gfs:/gfs
-      - ./:/localdata
+      - {{ gluster_mount_dir }}:/gfs
     environment:
       - SPARK_MASTER=spark://spark-master:7077
     env_file:
@@ -63,10 +62,10 @@ services:
   jupyter:
     image: jupyter/pyspark-notebook:spark-3.2.1
     networks:
-      workbench:
+      {{ swarm_internal_overlay_network }}:
         aliases:
           - jupyter
-      net_traefik:
+      {{ swarm_external_overlay_network }}:
         aliases:
           - jupyter
     ports:
@@ -76,7 +75,7 @@ services:
       - 4042:4042
     volumes:
       - .:/home/jovyan/work
-      - /mnt/gfs:/gfs
+      - {{ gluster_mount_dir }}:/gfs
     environment:
       - SPARK_MASTER=spark://spark-master:7077
     env_file:
@@ -91,9 +90,9 @@ services:
         constraints: [node.role == manager]
       labels:
         - traefik.enable=true
-        - traefik.docker.network=net_traefik  # required when container connects to more than one network
+        - traefik.docker.network={{ swarm_external_overlay_network }}  # required when container connects to more than one network
         - traefik.http.services.to-jupyter.loadbalancer.server.port=8888
-        - traefik.http.routers.to-jupyter.rule=Host(`jupyter.pluribus.vcap.me`)
+        - traefik.http.routers.to-jupyter.rule=Host(`jupyter.{{ swarm_env_domain }}`)
         # - traefik.http.routers.to-jupyter.tls=true
         # - traefik.http.routers.to-jupyter.entrypoints=websecure
         - traefik.http.routers.to-jupyter.entrypoints=web

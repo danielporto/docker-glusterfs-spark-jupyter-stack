@@ -7,3 +7,21 @@ default_home_dir: "/home/{{default_user}}"
 default_install_dir: "{{default_home_dir}}/kaioken"
 monitor_install_dir: "{{ default_install_dir }}/monitor"
 
+
+stack_experiment_dir: /home/dporto/devel/pluribus_processing_stack
+
+# firewall configuration
+# https://galaxy.ansible.com/geerlingguy/firewall
+firewall_state: stopped
+
+
+gluster_brick_dir: /gfs/pluribus/brick
+gluster_mount_dir: /mnt/gfs/pluribus
+gluster_metadata_dir: /var/lib/glusterd
+gluster_brick_name: gfs
+
+
+swarm_advertise_port: 2377
+swarm_internal_overlay_network: pluribus_internal
+swarm_external_overlay_network: pluribus_external
+swarm_env_domain: pluribus.vcap.me

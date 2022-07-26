@@ -5,15 +5,15 @@ volumes:
   vol_gateway_certs:
 
 networks:
-  workbench:
+  {{ swarm_internal_overlay_network }}:
     external: true
-  net_traefik:
+  {{ swarm_external_overlay_network }}:
     external: true
 
 
 services:
   traefik:
-    image: pluribus/traefik:v2.6.1
+    image: danielporto/pluribus:traefik_v2.6.1
     build:
       context: ./traefik
       dockerfile: Dockerfile
@@ -21,7 +21,7 @@ services:
         TRAEFIK_BASE: "v2.6.1"
     restart: unless-stopped
     networks:
-      - net_traefik
+      - {{ swarm_external_overlay_network }}
     ports:
       - 80:80
       - 443:443
@@ -54,7 +54,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
     networks:
-      - workbench
+      - {{ swarm_internal_overlay_network }}
     deploy:
       mode: global
       placement:
@@ -75,8 +75,8 @@ services:
     env_file:
       - ./env
     networks:
-      - net_traefik
-      - workbench
+      - {{ swarm_external_overlay_network }}
+      - {{ swarm_internal_overlay_network }}
     ports:
       - 9090:9000
     deploy:
@@ -86,7 +86,7 @@ services:
         constraints: [node.role == manager]
       labels:
         - traefik.enable=true
-        - traefik.docker.network=net_traefik  # required when container connects to more than one network
+        - traefik.docker.network={{ swarm_external_overlay_network }}  # required when container connects to more than one network
         - traefik.http.services.to-portainer.loadbalancer.server.port=9000
         - traefik.http.routers.to-portainer.rule=Host(`portainer.pluribus.vcap.me`)
         # - traefik.http.routers.to-portainer.tls=true
