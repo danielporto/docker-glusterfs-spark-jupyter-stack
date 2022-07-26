@@ -1,28 +1,108 @@
 # Distributed deployment
 
-this is split into two parts: first, the GlusterFS which are installed in the machines
-and the stack deployment. 
+The distributed deployment is split into two parts: first, the GlusterFS which 
+provides distrinuted file system that can be accessed by all containers and a docker 
+swarm stack.
+
+The GlusterFS must be installed in the hosts where the containers are deployed.
+That is, the containers mount the local mountpoint just like any local volume.
+The host will be in charge of providing distributed access to the content of the FS.
+
+On the other hand, the docker swarm distributes the spark workers across all the
+hosts available. 
+
+## Preliminaries - Ansible
+The deployment can be automatically done using Ansible playbooks available.
+### Lab environment
+We assume a testbed with a deployment machine, from which the commands are issued
+and at least two other machines that are targets of the remote configurations.
+On the deployment machine, install ansible:
+```
+$ sudo apt install -y ansible
+```
+Additionally, install 2 plugins required by the playbooks:
+```
+ansible-galaxy install geerlingguy.firewall 
+ansible-galaxy install geerlingguy.glusterfs
+```
+### Ansible configuration
+The rest of the configuration is simple. The requirements are: A list of machines (at least 2)
+running Debian/Ubuntu Linux with ssh server enabled.
+
+Configure ssh credentials to these machines and update the `inventory.ini` 
+file. The credentials must have with sudo access to the remote nodes.
+
+### Test the connection
+Optionally, ensure that the machines are recheable.
+```
+$ ansible all -m ping
+```
+
+
+Once you're done, run the playbook to update the /etc/hosts and include the 
+IP addresses of the hosts composing the swarm.
+```
+$ ansible-playbook etchosts-update.yml
+```
+
+If the command is successful you can move to the next step.
 
 ## Quick start to GlusterFS
 
-The deployment can be automatically done using ansible playbooks available.
-Start defining the set of nodes that will be part of the DFS ensamble.
+We assume that there is no other Gluster volume. 
+Running these playbooks in a environment that already have another GFS can
+cause problems and potential data loss.
 
-For that, update the `inventory.ini` file with the credentials (with sudo access)
-to the remote nodes.
+To install Gluster, simply run the playbook:
 
-Make sure you have ssh access with keyfile to all these nodes.
-
-
-### Test the connection
-Open the container (which are not required, but has ansible and all tools installed for simplicity),
-and run:
 ```
-ansible all -m ping
+$ ansible-playbook glusterfs-provision
 ```
 
+If the command ends successfully, you end up with a mount point corresponding to 
+GFS. You can test by adding a file in one server and veryfing the content of the file
+in the other server.
 
-To deploy an the GlusterFS cluster, run:
+
+## Quick start to docker swarm
+The stack is also deployed with playbooks. 
+Similar to GFS, we assume no other stack is deployed as the operations performed by
+the playbooks are potentially disruptive. We also assume docker is available in 
+all remote nodes.
+
+To deploy the network stack run the playbooks:
+
 ```
-  docker-compose build
-  docker-compose up
+$ ansible-playbook stack-network-deploy.yml
+```
+
+When the network is up, deploy the service stack:
+
+```
+$ ansible-playbook stack-deploy.yml
+```
+
+## Accessing the services
+
+> NOTE: you can use ssh and firefox as proxy to a remote node where the stack is deployed:
+>```
+> $ ssh -D 1080 user@machine
+>```
+> Where **machine is the host where the swarm master is deployed**.
+> Then, configure Firefox with SOCK5s proxy, to all URLs (you can use foxyproxy addon to make it easier switching on/off). With this configuration you can use  URLs to access the services.
+
+
+## Cleanup
+In case of problems or when you're done with the deployment the following
+playbooks completely eliminate both GlusterFS, the Service stack and the Swarm configuration (and possible start fresh with a clean environment):
+
+```
+$ ansible-playbook stack-undeploy.yml
+$ ansible-playbook glusterfs-decomission.yml
+$ ansible-playbook etchosts-clean.yml
+```
+
+
+
+
+

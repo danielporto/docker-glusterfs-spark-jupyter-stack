@@ -27,15 +27,6 @@ Run `docker network inspect` on the network (e.g. `docker-glusterfs-spark-jupter
 | Jupyter          | http://localhost:10000                            | http://jupyter.pluribus.vcap.me   |
 | Proxy            |                                                   | http://traefik.pluribus.vcap.me   |
 
-> NOTE: you can use ssh and firefox as proxy to a remote node where the stack is deployed:
->```
-> $ ssh -D 1080 user@machine
->```
-> Then, configure Firefox with SOCK5s proxy, to all URLs (you can use foxyproxy addon to make it easier switching on/off). With this configuration you can use either URLs to access the services.
-
-## Important note regarding Docker Desktop
-Since Docker Desktop turned “Expose daemon on tcp://localhost:2375 without TLS” off by default there have been all kinds of connection problems running the complete docker-compose. Turning this option on again (Settings > General > Expose daemon on tcp://localhost:2375 without TLS) makes it all work. I’m still looking for a more secure solution to this.
-
 ## Quick Start with Jupyter:
 Navigate to Jupyter website: http://jupyter.pluribus.vcap.me and create a new notebook.
 run:
