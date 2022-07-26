@@ -13,7 +13,7 @@ networks:
 
 services:
   traefik:
-    image: pluribus/traefik:v2.6.1
+    image: danielporto/pluribus:traefik_v2.6.1
     build:
       context: ./traefik
       dockerfile: Dockerfile
