@@ -2,13 +2,14 @@
 # ==========================================================================================
 # System default
 # ==========================================================================================
-default_user: "jfloff"
+default_user: "dporto"
+default_group: "gsd"
 default_home_dir: "/home/{{default_user}}"
 # the dataset must be available for one of the nodes of the GFS
-dataset_path: /mnt/nas/inesc/jfloff/alibaba-dataset
+dataset_path: /mnt/nas/inesc/dporto/alibaba-dataset
 
 
-stack_experiment_dir: /home/jfloff/devel/pluribus_processing_stack
+stack_experiment_dir: /home/dporto/devel/pluribus_processing_stack
 
 # firewall configuration
 # https://galaxy.ansible.com/geerlingguy/firewall

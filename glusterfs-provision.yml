@@ -60,3 +60,11 @@
         fstype: glusterfs
         opts: "defaults,_netdev"
         state: mounted
+
+    - name: Recursively change permissions of "{{gluster_mount_dir}}"
+      file:
+        path: "{{ gluster_mount_dir }}"
+        mode: u=rw,g=rw,o=r
+        recurse: yes
+        owner: "{{ default_user }}"
+        group: "{{ default_grop }}"
