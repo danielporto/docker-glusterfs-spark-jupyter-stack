@@ -1,4 +1,20 @@
 #!/usr/bin/ansible-playbook
+
+- hosts: gluster
+  become: no
+  gather_facts: no
+  any_errors_fatal: true
+    
+  vars_files:
+    - vars.yaml
+  
+  tasks:
+    - name: Validate Gluster number of bricks and replicas
+      fail: 
+        msg: "Gluster has invalid number of replicas: ({{groups.gluster | length}}). The cluster size must be proportional to {{ gluster_replicas }}. "
+      when: "not( (groups.gluster | length) % gluster_replicas == 0 )"
+      run_once: yes
+
 - hosts: gluster
   become: yes
   any_errors_fatal: true
@@ -18,16 +34,20 @@
         - "{{ gluster_brick_dir }}"
         - "{{ gluster_mount_dir }}"
 
+    - name: Ensure Rsync is installed (required for the synchronize module, to deploy the dataset)
+      apt: 
+        name: rsync
+        update_cache: yes
+
 # list peers: sudo gluster peer status
 # remove peers: sudo gluster peer detach IP
 # add peers: sudo gluster peer 
-
     - name: Configure Gluster volume.
       gluster_volume:
         state: present
         name: "{{ gluster_brick_name }}"
         brick: "{{ gluster_brick_dir }}"
-        replicas: 2
+        disperses: "{{gluster_replicas}}"
         cluster: "{{ groups.gluster | join(',') }}"
         host: "{{ inventory_hostname }}"
         force: yes

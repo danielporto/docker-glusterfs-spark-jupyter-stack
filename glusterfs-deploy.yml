@@ -1,0 +1,20 @@
+#!/usr/bin/ansible-playbook
+
+- import_playbook: glusterfs-provision.yml
+
+- hosts: gluster
+  become: no
+  gather_facts: no
+  any_errors_fatal: true
+
+  vars_files:
+    - vars.yaml
+
+  tasks:
+    - name: Upload dataset to GFS
+      synchronize:
+        src: "{{ dataset_path }}" 
+        dest: "{{ gluster_mount_dir }}"
+        checksum: yes
+        times: no
+      run_once: yes

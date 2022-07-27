@@ -4,8 +4,8 @@
 # ==========================================================================================
 default_user: "jfloff"
 default_home_dir: "/home/{{default_user}}"
-default_install_dir: "{{default_home_dir}}/kaioken"
-monitor_install_dir: "{{ default_install_dir }}/monitor"
+# the dataset must be available for one of the nodes of the GFS
+dataset_path: /mnt/nas/inesc/jfloff/alibaba-dataset
 
 
 stack_experiment_dir: /home/jfloff/devel/pluribus_processing_stack
@@ -15,10 +15,11 @@ stack_experiment_dir: /home/jfloff/devel/pluribus_processing_stack
 firewall_state: stopped
 
 
-gluster_brick_dir: /gfs/pluribus/brick
+gluster_brick_dir: /home/gfs_bricks/pluribus
 gluster_mount_dir: /mnt/gfs/pluribus
 gluster_metadata_dir: /var/lib/glusterd
 gluster_brick_name: gfs
+gluster_replicas: 3
 
 
 swarm_advertise_port: 2377
