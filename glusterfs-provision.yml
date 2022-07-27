@@ -67,4 +67,5 @@
         mode: u=rw,g=rw,o=r
         recurse: yes
         owner: "{{ default_user }}"
-        group: "{{ default_grop }}"
+        group: "{{ default_group }}"
+      run_once: yes
