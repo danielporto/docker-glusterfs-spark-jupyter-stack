@@ -124,6 +124,7 @@ services:
       - ./:/localdata
     environment:
       - SPARK_MASTER=spark://spark-master:7077
+      - SERVICE_PRECONDITION=spark-master:7077
     env_file:
       - ./env
 
