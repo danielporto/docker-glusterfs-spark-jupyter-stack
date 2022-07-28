@@ -3,7 +3,7 @@
 - import_playbook: glusterfs-provision.yml
 
 - hosts: gluster
-  become: no
+  become: yes
   gather_facts: no
   any_errors_fatal: true
 
@@ -17,4 +17,13 @@
         dest: "{{ gluster_mount_dir }}"
         checksum: yes
         times: no
+      run_once: yes
+      
+    - name: Recursively change permissions of "{{gluster_mount_dir}}"
+      file:
+        path: "{{ gluster_mount_dir }}"
+        mode: u=rw,g=rw,o=r
+        recurse: yes
+        owner: "{{ default_user }}"
+        group: "{{ default_group }}"
       run_once: yes
