@@ -1,3 +1,5 @@
+#! /usr/local/bin/ansible-playbook
+
 - hosts: swarm_manager,swarm_workers 
   any_errors_fatal: true
   gather_facts: no
@@ -25,6 +27,17 @@
       run_once: true
       ignore_errors: yes
 
+
+    - name: Force leaving Docker Swarm
+      shell: >
+            docker swarm leave -f
+      ignore_errors: yes
+
+    - name: Remove stack files form remote nodes
+      file: "path={{ item }} state=absent"
+      with_items:
+        - "{{ stack_experiment_dir }}"
+
     - name: Remove management volumes
       shell: >
             docker volume rm {{ item }}
@@ -33,14 +46,3 @@
       - "management_vol_portainer"
       run_once: true
       ignore_errors: yes
-
-    - name: Force leaving Docker Swarm
-      shell: >
-            docker swarm leave -f
-      ignore_errors: yes
-
-
-    - name: Remove stack files form remote nodes
-      file: "path={{ item }} state=absent"
-      with_items:
-        - "{{ stack_experiment_dir }}"

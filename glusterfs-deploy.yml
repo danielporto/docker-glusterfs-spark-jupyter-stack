@@ -1,6 +1,6 @@
-#!/usr/bin/ansible-playbook
+#! /usr/local/bin/ansible-playbook
 
-- import_playbook: glusterfs-provision.yml
+# - import_playbook: glusterfs-provision.yml
 
 - hosts: gluster
   become: yes
@@ -12,18 +12,9 @@
 
   tasks:
     - name: Upload dataset to GFS
-      synchronize:
+      ansible.builtin.copy:
         src: "{{ dataset_path }}" 
-        dest: "{{ gluster_mount_dir }}"
-        checksum: yes
-        times: no
+        remote_src: yes 
+        dest: "{{ gluster_data_dir }}"
       run_once: yes
       
-    - name: Recursively change permissions of "{{gluster_mount_dir}}"
-      file:
-        path: "{{ gluster_mount_dir }}"
-        mode: u=rw,g=rw,o=r
-        recurse: yes
-        owner: "{{ default_user }}"
-        group: "{{ default_group }}"
-      run_once: yes

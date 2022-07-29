@@ -1,3 +1,4 @@
+#! /usr/local/bin/ansible-playbook
 # TODO CHECK GlusterFS health
 
 

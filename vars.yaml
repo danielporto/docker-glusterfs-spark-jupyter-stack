@@ -6,7 +6,8 @@ default_user: "dporto"
 default_group: "gsd"
 default_home_dir: "/home/{{default_user}}"
 # the dataset must be available for one of the nodes of the GFS
-dataset_path: /mnt/nas/inesc/dporto/alibaba-dataset
+dataset_path: /mnt/nas/inesc/dporto/thesis_experiments.20211228.tgz
+# dataset_path: /mnt/nas/inesc/dporto/thesis_experiments.20220206.tgz
 
 
 stack_experiment_dir: /home/dporto/devel/pluribus_processing_stack
@@ -17,7 +18,8 @@ firewall_state: stopped
 
 
 gluster_brick_dir: /home/gfs_bricks/pluribus
-gluster_mount_dir: /mnt/gfs/pluribus
+gluster_mount_dir: /mnt/gfs
+gluster_data_dir: "{{ gluster_mount_dir }}/pluribus"
 gluster_metadata_dir: /var/lib/glusterd
 gluster_brick_name: gfs
 gluster_replicas: 3

@@ -15,9 +15,9 @@ services:
       {{ swarm_external_overlay_network }}:
         aliases:
           - spark-master
-    # ports:
-    #   - 8080:8080
-    #   - 7077:7077
+    ports:
+      - 8080:8080
+      - 7077:7077
     env_file:
       - ./env    
     volumes:

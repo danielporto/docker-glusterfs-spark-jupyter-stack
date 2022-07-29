@@ -13,6 +13,19 @@ hosts available.
 
 ## Preliminaries - Ansible
 The deployment can be automatically done using Ansible playbooks available.
+Make sure you are using python 3.8.10 and ansible 2.10.17. Other versions are not guaranteed to work as ansible versions breaks backward compatibility. 
+
+To install the specific version of Python, use ASDF. Instructions
+can be found in https://asdf-vm.com/guide/getting-started.html#_1-install-dependencies
+
+To force ansible installation, ensure to remove the version installed with the 
+distro package system `sudo apt remove --purge ansible`, and then run:
+
+```
+sudo python3 -m pip install --upgrade pip
+sudo python3 -m pip install ansible==2.10.17
+```
+
 ### Lab environment
 We assume a testbed with a deployment machine, from which the commands are issued
 and at least two other machines that are targets of the remote configurations.

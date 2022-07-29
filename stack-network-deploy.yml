@@ -1,3 +1,5 @@
+#! /usr/local/bin/ansible-playbook
+
 - hosts: swarm_manager 
   any_errors_fatal: true
   gather_facts: no

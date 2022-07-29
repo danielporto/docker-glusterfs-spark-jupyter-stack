@@ -1,4 +1,4 @@
-#!/usr/bin/ansible-playbook
+#! /usr/local/bin/ansible-playbook
 
 - hosts: gluster
   become: no
@@ -61,11 +61,8 @@
         opts: "defaults,_netdev"
         state: mounted
 
-    - name: Recursively change permissions of "{{gluster_mount_dir}}"
-      file:
-        path: "{{ gluster_mount_dir }}"
-        mode: u=rw,g=rw,o=r
-        recurse: yes
-        owner: "{{ default_user }}"
-        group: "{{ default_group }}"
-      run_once: yes
+    - name: Create the data dir inside Gluster
+      file: "path={{ item }} state=directory mode=0775"
+      with_items:
+        - "{{ gluster_mount_dir }}/pluribus"
+      
