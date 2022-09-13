@@ -45,7 +45,7 @@ services:
 # monitor service
 #----------------------------------------------------------------------------------
   agent:
-    image: portainer/agent:2.12.1-alpine 
+    image: portainer/agent:2.15.0-alpine 
     environment:
       AGENT_CLUSTER_ADDR: tasks.agent
       AGENT_PORT: 40091
@@ -68,7 +68,7 @@ services:
   # https://github.com/portainer/portainer/issues/1506
   # docker run --rm httpd:2.4-alpine htpasswd -nbB admin 'password' | cut -d ":" -f 2
   portainer:
-    image: portainer/portainer-ce:2.11.1-alpine
+    image: portainer/portainer-ce:2.15.0-alpine
     command: -H tcp://tasks.agent:40091 --tlsskipverify --admin-password="$$2y$$05$$RHexFs6Yw8763FQvtrv6dOw9z.TLdfp7myCBfDW6iu/iYipAqnM62"
     volumes:
       - vol_portainer:/data
