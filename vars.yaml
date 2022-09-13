@@ -26,7 +26,6 @@ gluster_replicas: 3
 
 
 swarm_advertise_port: 2377
-swarm_internal_overlay_network: pluribus_internal
 swarm_external_overlay_network: pluribus_external
 swarm_env_domain: pluribus.vcap.me
 

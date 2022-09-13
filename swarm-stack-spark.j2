@@ -1,7 +1,5 @@
 version: '3.8'
 networks:
-  {{ swarm_internal_overlay_network }}:
-    external: true
   {{ swarm_external_overlay_network }}:
     external: true
 
@@ -9,9 +7,6 @@ services:
   spark-master:
     image: bde2020/spark-master:3.2.1-hadoop3.2
     networks:
-      {{ swarm_internal_overlay_network }}:
-        aliases:
-          - spark-master
       {{ swarm_external_overlay_network }}:
         aliases:
           - spark-master
@@ -43,7 +38,6 @@ services:
     image: bde2020/spark-worker:3.2.1-hadoop3.2
     networks:
       # do not use aliases here. replication will make a mess with the server communication
-      {{ swarm_internal_overlay_network }}:
       {{ swarm_external_overlay_network }}:
     # ports:
     #   - 8081:8081
@@ -63,9 +57,6 @@ services:
   jupyter:
     image: jupyter/pyspark-notebook:spark-3.2.1
     networks:
-      {{ swarm_internal_overlay_network }}:
-        aliases:
-          - jupyter
       {{ swarm_external_overlay_network }}:
         aliases:
           - jupyter
