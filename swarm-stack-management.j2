@@ -5,8 +5,6 @@ volumes:
   vol_gateway_certs:
 
 networks:
-  {{ swarm_internal_overlay_network }}:
-    external: true
   {{ swarm_external_overlay_network }}:
     external: true
 
@@ -54,7 +52,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
     networks:
-      - {{ swarm_internal_overlay_network }}
+      - {{ swarm_external_overlay_network }}
     deploy:
       mode: global
       placement:
@@ -76,7 +74,6 @@ services:
       - ./env
     networks:
       - {{ swarm_external_overlay_network }}
-      - {{ swarm_internal_overlay_network }}
     ports:
       - 9090:9000
     deploy:

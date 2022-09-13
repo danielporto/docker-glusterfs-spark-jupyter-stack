@@ -38,17 +38,9 @@
     #   debug:
     #     msg: "{{ worker_token }}"
 
-    - name: Initialize Docker Swarm Network (internal)
-      shell: >
-            docker network create
-            --attachable -d overlay {{ swarm_internal_overlay_network }}
-      when: swarm_status.rc != 0
-      run_once: true
-
     - name: Initialize Docker Swarm Network (traefik)
       shell: >
-            docker network create
-            --attachable -d overlay {{ swarm_external_overlay_network }}
+            docker network create --attachable -d overlay {{ swarm_external_overlay_network }}
       when: swarm_status.rc != 0
       run_once: true
 

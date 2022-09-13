@@ -22,7 +22,6 @@
       shell: >
             docker network rm {{ item }}
       with_items:
-      - "{{ swarm_internal_overlay_network }}"
       - "{{ swarm_external_overlay_network }}"
       run_once: true
       ignore_errors: yes
