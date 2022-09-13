@@ -12,6 +12,7 @@
 
   tasks:
     - name: Check filesystem
+      run_once: yes
       ansible.builtin.stat:
         path: "{{ gluster_dataset_path }}"
       register: uploaded
