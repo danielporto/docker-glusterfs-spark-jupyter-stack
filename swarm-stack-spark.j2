@@ -45,7 +45,7 @@ services:
       - {{ gluster_mount_dir }}:/gfs
     environment:
       - SPARK_MASTER=spark://spark-master:7077
-      - SPARK_DAEMON_MEMORY={{ spark_daemon_memory }}
+      - SPARK_EXECUTOR_MEMORY={{ spark_executor_memory }}
     env_file:
       - ./env
     deploy:

@@ -31,4 +31,4 @@ swarm_env_domain: pluribus.vcap.me
 
 # Info on spark env vars:
 # https://spark.apache.org/docs/latest/spark-standalone.html#cluster-launch-scripts
-spark_daemon_memory: 4g
+spark_executor_memory: 4g
