@@ -1,6 +1,6 @@
 #! /usr/local/bin/ansible-playbook
 
-- hosts: swarm_manager 
+- hosts: swarm_manager
   any_errors_fatal: true
   gather_facts: no
   become: no
@@ -40,14 +40,14 @@
 
     - name: Initialize Docker Swarm Network (internal)
       shell: >
-            docker network create 
+            docker network create
             --attachable -d overlay {{ swarm_internal_overlay_network }}
       when: swarm_status.rc != 0
       run_once: true
 
     - name: Initialize Docker Swarm Network (traefik)
       shell: >
-            docker network create 
+            docker network create
             --attachable -d overlay {{ swarm_external_overlay_network }}
       when: swarm_status.rc != 0
       run_once: true
@@ -58,27 +58,27 @@
   gather_facts: no
   vars_files:
       - vars.yaml
-  
+
   tasks:
     - name: Add Workers to the Swarm
-      shell: "docker swarm join --token {{ hostvars[hostvars[inventory_hostname]['groups']['swarm_manager'][0]]['worker_token'] }} {{ hostvars[hostvars[inventory_hostname]['groups']['swarm_manager'][0]]['ansible_host']}}:{{ swarm_advertise_port }}"
+      shell: "docker swarm join --token {{ hostvars[hostvars[inventory_hostname]['groups']['swarm_manager'][0]]['worker_token'].stdout }} {{ hostvars[hostvars[inventory_hostname]['groups']['swarm_manager'][0]]['ansible_host']}}:{{ swarm_advertise_port }}"
       register: out
       failed_when: "not(out.rc == 0 or 'This node is already part of a swarm' in out.stderr)"
 
-- hosts: swarm_manager 
+- hosts: swarm_manager
   any_errors_fatal: true
   gather_facts: no
   become: no
   vars_files:
       - vars.yaml
-  
+
   tasks:
     - name: compute the swarm size
       set_fact:
         swarm_size: "{{ hostvars[inventory_hostname]['groups']['swarm_manager'] | union(hostvars[inventory_hostname]['groups']['swarm_workers']) | unique | length  }}"
 
     - name: print swarm size
-      debug: 
+      debug:
         var: swarm_size
 
     - name: Check if all nodes are joined to the swarm
