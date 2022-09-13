@@ -1,6 +1,6 @@
 #! /usr/local/bin/ansible-playbook
 
-- hosts: swarm_manager,swarm_workers 
+- hosts: swarm_manager,swarm_workers
   any_errors_fatal: true
   gather_facts: no
   become: no
@@ -34,6 +34,7 @@
       ignore_errors: yes
 
     - name: Remove stack files form remote nodes
+      become: yes
       file: "path={{ item }} state=absent"
       with_items:
         - "{{ stack_experiment_dir }}"

@@ -2,13 +2,13 @@
 # TODO CHECK GlusterFS health
 
 
-- hosts: swarm_manager 
+- hosts: swarm_manager
   any_errors_fatal: true
   gather_facts: no
   become: no
   vars_files:
       - vars.yaml
-  
+
   tasks:
     - name: Compute the swarm size
       set_fact:
@@ -19,28 +19,30 @@
       register: swarm_status
 
     - name: Check if the swarm is ready for deploy
-      fail: 
+      fail:
         msg: "Swarm is not ready, run the playbook stack-network-deploy.yml first."
       when: "not( swarm_size == swarm_status.stdout )"
 
     - name: Ensures experiment stack dir exists
-      file: "path={{stack_experiment_dir}} state=directory"
+      file:
+        path: "{{stack_experiment_dir}}"
+        state: directory
+        mode: u+rw,g+wx,o+rwx
 
     - name: Deploy management stack file
-      template: 
+      template:
         src: swarm-stack-management.j2
         dest: "{{ stack_experiment_dir }}/swarm-stack-management.yml"
 
     - name: Deploy spark stack file
-      template: 
+      template:
         src: "swarm-stack-spark.j2"
         dest: "{{ stack_experiment_dir }}/swarm-stack-spark.yml"
 
     - name: Deploy env
-      template: 
+      template:
         src: "swarm-env.j2"
         dest: "{{ stack_experiment_dir }}/env"
-
 
     - name: Start Management stack
       shell: >
