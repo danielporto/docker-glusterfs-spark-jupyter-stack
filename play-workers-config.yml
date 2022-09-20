@@ -1,4 +1,4 @@
-- hosts: swarm_workers
+- hosts: swarm_manager,swarm_workers
   any_errors_fatal: true
   become: no
   gather_facts: no
@@ -14,7 +14,7 @@
     - name: Show container ids
       debug:
         msg: "{{out.stdout}}"
-    
+
     - name: Install pip dependencies on remote containers
       become: yes
       shell: docker exec {{out.stdout}} /sbin/apk --update add gcc make g++ python3-dev
