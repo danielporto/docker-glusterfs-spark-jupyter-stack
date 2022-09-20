@@ -7,7 +7,7 @@
 
   tasks:
     - name: Get container ids from worker nodes
-      shell: docker ps | grep worker | cut -d ' ' -f 1
+      shell: docker ps | grep master | cut -d ' ' -f 1
       register: out
       failed_when: "not(out.rc == 0 or 'This node is already part of a swarm' in out.stderr)"
 
