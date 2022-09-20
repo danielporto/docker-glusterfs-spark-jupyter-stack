@@ -1,4 +1,4 @@
-- hosts: swarm_workers
+- hosts: swarm_manager
   any_errors_fatal: true
   become: no
   gather_facts: no
