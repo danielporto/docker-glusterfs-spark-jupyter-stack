@@ -15,23 +15,19 @@
       debug:
         msg: "{{out.stdout}}"
 
-    - name: Install pip dependencies on remote containers
+    - name: Install apk dependencies on remote containers
       become: yes
-      shell: docker exec {{out.stdout}} /sbin/apk --update add gcc make g++ python3-dev
+      shell: docker exec {{out.stdout}} /sbin/apk --update add {{ apk_deps | join(' ') }}
       register: cmdout
 
     - name: Debug container id
       debug:
         msg: "{{cmdout.stdout}}"
 
-    - name: Install python packages on remote containers
+    - name: Install pip packages on remote containers
       become: yes
-      shell: docker exec {{out.stdout}} python3 -m pip install --upgrade {{item}}
+      shell: docker exec {{out.stdout}} python3 -m pip install --upgrade {{ pip_deps | join(' ') }}
       register: cmdout
-      with_items:
-        - pip
-        - pyyaml
-        - numpy
 
     - name: Debug container id
       debug:

@@ -12,6 +12,13 @@ dataset_files:
   - thesis_experiments.20211228.tgz
 
 stack_experiment_dir: /home/dporto/devel/pluribus_processing_stack
+apk_deps:
+  - gcc
+  - make
+  - g++
+  - python3-dev
+pip_deps:
+  - pip
 
 # firewall configuration
 # https://galaxy.ansible.com/geerlingguy/firewall
