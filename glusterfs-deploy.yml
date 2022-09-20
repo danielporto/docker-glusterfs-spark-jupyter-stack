@@ -19,8 +19,10 @@
 
     - name: Upload dataset to GFS
       ansible.builtin.copy:
-        src: "{{ dataset_folder }}/{{ dataset_filename }}"
+        src: "{{ dataset_folder }}/{{ item }}"
         remote_src: yes
         dest: "{{ gluster_dataset_path }}"
       run_once: yes
       when: not uploaded.stat.exists
+      with_items:
+        - "{{ dataset_files }}"
