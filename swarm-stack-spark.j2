@@ -5,7 +5,7 @@ networks:
 
 services:
   spark-master:
-    image: bde2020/spark-master:3.2.1-hadoop3.2
+    image: bde2020/spark-master:3.3.0-hadoop3.3
     networks:
       {{ swarm_external_overlay_network }}:
         aliases:
@@ -35,7 +35,7 @@ services:
         - traefik.http.routers.to-spark.entrypoints=web
 
   spark-worker:
-    image: bde2020/spark-worker:3.2.1-hadoop3.2
+    image: bde2020/spark-worker:3.3.0-hadoop3.3
     networks:
       # do not use aliases here. replication will make a mess with the server communication
       {{ swarm_external_overlay_network }}:
@@ -55,7 +55,7 @@ services:
 
 
   jupyter:
-    image: jupyter/pyspark-notebook:spark-3.2.1
+    image: jupyter/pyspark-notebook:spark-3.3.0
     networks:
       {{ swarm_external_overlay_network }}:
         aliases:

@@ -1,12 +1,10 @@
-version: '3'
+version: '3.8'
 
 volumes:
   vol_portainer:
   vol_gateway_certs:
 
 networks:
-  workbench:
-    driver: bridge
   net_traefik:
     driver: bridge
 
@@ -50,14 +48,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
     networks:
-      - workbench
+      - net_traefik
     env_file:
       - ./env
 
   # docker run --rm httpd:2.4-alpine htpasswd -nbB admin 'password' | cut -d ":" -f 2
   portainer:
     image: portainer/portainer-ce:2.15.0-alpine
-    command: -H tcp://tasks.agent:40091 --tlsskipverify --admin-password="$$2y$$05$$RHexFs6Yw8763FQvtrv6dOw9z.TLdfp7myCBfDW6iu/iYipAqnM62"
+    command: -H tcp://tasks.agent:40091 --tlsskipverify --admin-password='$$2y$$05$$RHexFs6Yw8763FQvtrv6dOw9z.TLdfp7myCBfDW6iu/iYipAqnM62'
     restart: on-failure
     volumes:
       - vol_portainer:/data
@@ -66,7 +64,6 @@ services:
     container_name: portainer
     networks:
       - net_traefik
-      - workbench
     ports:
       - 9090:9000
     labels:
@@ -82,20 +79,19 @@ services:
 # Spark 
 #
   spark-master:
-    image: bde2020/spark-master:3.2.1-hadoop3.2
+    image: bde2020/spark-master:3.3.0-hadoop3.3
     container_name: spark-master
     networks:
-      workbench:
-        aliases:
-          - spark-master
       net_traefik:
         aliases:
           - spark-master
-    # ports:
-    #   - 8080:8080
-    #   - 7077:7077
+    ports:
+      - 8080:8080
+      - 7077:7077
     env_file:
       - ./env    
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
     volumes:
       - ./data:/gfs/data
       - ./:/localdata
@@ -109,32 +105,29 @@ services:
       - traefik.http.routers.to-spark.entrypoints=web
 
   spark-worker:
-    image: bde2020/spark-worker:3.2.1-hadoop3.2
+    image: bde2020/spark-worker:3.3.0-hadoop3.3
     container_name: spark-worker
     depends_on:
       - spark-master
+    # do not use aliases here. replication will make a mess with the server communication
     networks:
-      # do not use aliases here. replication will make a mess with the server communication
-      workbench:
+      net_traefik:
     # ports:
     #   - 8081:8081
     restart: on-failure
     volumes:
       - ./data:/gfs/data
       - ./:/localdata
+    env_file:
+      - ./env
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - SERVICE_PRECONDITION=spark-master:7077
-    env_file:
-      - ./env
 
   jupyter:
-    image: jupyter/pyspark-notebook:spark-3.2.1
+    image: jupyter/pyspark-notebook:spark-3.3.0
     container_name: jupyter
     networks:
-      workbench:
-        aliases:
-          - jupyter
       net_traefik:
         aliases:
           - jupyter
