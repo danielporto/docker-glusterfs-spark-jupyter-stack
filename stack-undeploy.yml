@@ -46,3 +46,13 @@
       - "management_vol_portainer"
       run_once: true
       ignore_errors: yes
+
+    - name: Drop memory caches
+      shell: >
+            sync; echo 3 > /proc/sys/vm/drop_caches
+      become: yes
+
+    - name: Clean swap
+      shell: >
+            swapoff -a; swapon -a
+      become: yes
