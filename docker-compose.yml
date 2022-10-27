@@ -29,17 +29,17 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - vol_gateway_certs:/certs
     security_opt:
-      - no-new-privileges=true # https://docs.docker.com/engine/reference/run/#security-configuration      
+      - no-new-privileges=true # https://docs.docker.com/engine/reference/run/#security-configuration
     env_file:
       - ./env
     environment:
       - TRAEFIK_SWARM_MODE=false
-  
+
 #----------------------------------------------------------------------------------
 # monitor service
 #----------------------------------------------------------------------------------
   agent:
-    image: portainer/agent:2.15.0-alpine 
+    image: portainer/agent:2.15.0-alpine
     container_name: tasks.agent
     environment:
       AGENT_CLUSTER_ADDR: tasks.agent
@@ -76,7 +76,7 @@ services:
       - traefik.http.routers.to-portainer.entrypoints=web
 
 #
-# Spark 
+# Spark
 #
   spark-master:
     image: bde2020/spark-master:3.3.0-hadoop3.3
@@ -89,7 +89,7 @@ services:
       - 8080:8080
       - 7077:7077
     env_file:
-      - ./env    
+      - ./env
     environment:
       - SPARK_MASTER=spark://spark-master:7077
     volumes:
@@ -153,4 +153,3 @@ services:
       # - traefik.http.routers.to-jupyter.tls=true
       # - traefik.http.routers.to-jupyter.entrypoints=websecure
       - traefik.http.routers.to-jupyter.entrypoints=web
-
